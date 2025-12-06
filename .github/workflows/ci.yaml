@@ -53,7 +53,7 @@ jobs:
         run: |
           # Write config file, change to your destination registry
           AUTH=$(echo -n '${{ secrets.REGISTRY_SA }}:${{ secrets.REGISTRY_PASS }}' | base64)
-          echo "{\"auths\": {\"$(dirname $${{ vars.IMAGE_REGISTRY }})\": {\"auth\": \"${AUTH}\"}}}" > /kaniko/.docker/config.json
+          echo "{\"auths\": {\"$(dirname ${{ vars.IMAGE_REGISTRY }})\": {\"auth\": \"${AUTH}\"}}}" > /kaniko/.docker/config.json
 
           # Configure git
           export GIT_USERNAME="kaniko-bot"
@@ -80,7 +80,7 @@ jobs:
         env:
           image_name_tag_digest: ${{ needs.build.outputs.image_name_tag_digest }}
         run: |
-          /home/runner/bin/cosign login $(dirname $${{ vars.IMAGE_REGISTRY }}) -u '${{ secrets.REGISTRY_SA }}' -p '${{ secrets.REGISTRY_PASS }}'
+          /home/runner/bin/cosign login $(dirname ${{ vars.IMAGE_REGISTRY }}) -u '${{ secrets.REGISTRY_SA }}' -p '${{ secrets.REGISTRY_PASS }}'
           /home/runner/bin/cosign sign --key k8s://arc-runners/cosign ${image_name_tag_digest}
 
       - name: Cosign image signing verifying
